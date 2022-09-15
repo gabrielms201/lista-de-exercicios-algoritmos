@@ -8,6 +8,6 @@ add_executable("Aula 03 - Enumeracao"
 	aula03.c
 )
 
-project ("Exercicios")
+project ("Exercicios Algoritmos")
 
 
