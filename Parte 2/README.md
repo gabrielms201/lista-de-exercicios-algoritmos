@@ -79,7 +79,7 @@ linguagem C que verifica se existem dois segmentos consecutivos iguais na
 sequência, isto é, se existem i e m tais que:
 a[i] a[i+1] ... a[i+m-1] = a[i+m] a[i+m+1] ... a[i+2m-1]
 Imprima, caso existam, os valores de i e m.
-Exemplo: Na sequência 7 9 5 4 5 4 8 6 existem i=3 e m=2.
+Exemplo: Na sequência 7 9 5 4 5 4 8 6 existem i=3 e m=2
 Qual é complexidade da sua função ?
 ```
 ## 8
@@ -97,4 +97,3 @@ repetidos com m e n números inteiros, obter uma única sequência ordenada
 contendo todos os elementos das sequências originais.
 Qual é complexidade da sua função ?
 ```
-

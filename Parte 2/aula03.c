@@ -237,7 +237,7 @@ void ex6()
 // s: sequence
 // size: sequence size
 // output: (out) i and m (pass an array to get it)
-void func(int* s, int size, int output[2])
+void consecutiveSegment(int* s, int size, int output[2])
 {
 	int i = 0;
 	int m = 0;
@@ -262,8 +262,42 @@ void ex7()
 {
 	int output[2] = { 0,0 };
 	int s[8] = { 7, 9, 5, 4, 5, 4, 8, 6 };
-	func(s, 8, output);
-	printf("i = %d | m = %d", output[0], output[1]);
+	consecutiveSegment(s, 8, output);
+	printf("\ti = %d | m = %d", output[0], output[1]);
+}
+// Get the sum of the max growing segment
+// s: Segment
+// n: Segment size
+// Returns: sum of the max growing segment
+int maxGrowingSegmentSum(int* s, int n)
+{
+	int* sum = calloc(n, sizeof(int));
+	sum[0] = s[0];
+	for (int i = 1; i < n; i++)
+	{
+		sum[i] = sum[i - 1] + s[i];
+	}
+	int maxIndex = 0;
+	for (int i = 0; i < n; i++)
+	{
+		if (sum[i] > sum[maxIndex])
+		{
+			maxIndex = i;
+		}
+	}
+	int maxGrowing = 0;
+	for (int i = maxIndex; sum[i] > 0; i--)
+	{
+		maxGrowing += s[i];
+	}
+	return maxGrowing;
+	free(sum);
+}
+void ex8()
+{
+	int s[12] = { 5,2,-2,-7,3,14,10,-3,9,-6,4,1 };
+	int maxGrowing = maxGrowingSegmentSum(s, 12);
+	printf("Soma do crescimento máximo: %d", maxGrowing);
 }
 
 
@@ -281,6 +315,8 @@ int main()
 	ex5();
 	puts("Exercicio 6: ");
 	ex6();
-	puts("Exercicio : ");
+	puts("Exercicio 7: ");
 	ex7();
+	puts("Exercicio 8: ");
+	ex8();
 }
