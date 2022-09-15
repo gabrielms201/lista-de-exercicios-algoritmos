@@ -223,13 +223,13 @@ void ex6()
 	{
 		int s[9] = { 5,10,3,2,4,7,9,8,5 };
 		int value = maxGrowingSegmentLength(s, 9);
-		printf("\t test 1: max growing = %d\n", value); // should be 4
+		printf("\ttest 1: max growing = %d\n", value); // should be 4
 	}
 	// test 2
 	{
 		int s[5] = { 10,8,7,5,2 };
 		int value = maxGrowingSegmentLength(s, 5);
-		printf("\t test 2: max growing = %d\n", value); // should be 1
+		printf("\ttest 2: max growing = %d\n", value); // should be 1
 	}
 }
 
@@ -263,7 +263,7 @@ void ex7()
 	int output[2] = { 0,0 };
 	int s[8] = { 7, 9, 5, 4, 5, 4, 8, 6 };
 	consecutiveSegment(s, 8, output);
-	printf("\ti = %d | m = %d", output[0], output[1]);
+	printf("\ti = %d | m = %d\n", output[0], output[1]);
 }
 // Get the sum of the max growing segment
 // s: Segment
@@ -297,7 +297,54 @@ void ex8()
 {
 	int s[12] = { 5,2,-2,-7,3,14,10,-3,9,-6,4,1 };
 	int maxGrowing = maxGrowingSegmentSum(s, 12);
-	printf("Soma do crescimento máximo: %d", maxGrowing);
+	printf("\tSoma do crescimento máximo: %d", maxGrowing);
+}
+// Concatenates two sequences, generating a new one (ordered)
+void concatenate(int* s, int m, int* a, int n)
+{
+	int* r = malloc((m + n) * sizeof(int));
+	int i = 0;
+	int j = 0;
+	int k = 0; // Result indexes
+	while (i < m && j < n)
+	{
+		if (s[i] < a[j])
+		{
+			r[k] = s[i];
+			i++; k++;
+		}
+		else // s[i] > s[j]
+		{
+			r[k] = a[j];
+			j++; k++;
+		}
+	}
+	while (i < m)
+	{
+		r[k] = s[i];
+		k++;
+		i++;
+	}
+	while (j < n)
+	{
+		r[k] = a[j];
+		k++;
+		j++;
+	}
+	for (int z = 0; z < 7; z++)
+	{
+		printf("%d'", r[z]);
+	}
+	free(r);
+}
+void ex9()
+{
+	int m = 2;
+	int n = 5;
+	int s[2] = { 1,2 };
+	int a[5] = { 3,4,5,6,7 };
+	concatenate(s, m, a, n);
+
 }
 
 
@@ -319,4 +366,6 @@ int main()
 	ex7();
 	puts("Exercicio 8: ");
 	ex8();
+	puts("Exercicio 9: ");
+	ex9();
 }
