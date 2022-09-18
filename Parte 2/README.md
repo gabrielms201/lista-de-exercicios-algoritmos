@@ -170,3 +170,59 @@ permutações para a sequencia:
 Problema: Dado uma sequência com n números distintos enumerar as
 permutações n! permutações da sequencia
 ```
+
+
+# Aula 05 - Backtracking
+
+# 1
+```
+Escreva um algoritmo que apresenta todos os números binários de tamanho n,
+se for informado ao seu algoritmo n = 3, teríamos:
+000, 001, 010, 011, 100, 101, 110, 111.
+```
+```
+Poderíamos ter utilizado o algoritmo de gerar sequencias para tamanho de s!=a, passando n como um vetor acoplado na funcao (ex: a = {0,1}), porém, esse algoritmo utiliza melhor do backtracking para a resolução
+
+Execução desse exercício para melhor entendimento:
+Chamada para n = 2
+Stack:
+0: s={LIXO,LIXO}
+
+1 call
+	i = 0
+	s[0] = 0
+	s = {0,LIXO}
+	call(2nd)
+	//
+	s[0] = 1
+	s = {1,1}
+	call(5th)
+2 call
+	i = 1
+	s[1] = 0
+	s = {0,0}
+	call(3rd)
+	//
+	s[1] = 1
+	s = {0,1}
+	call(4th)
+3 call
+	i = 2
+	print(0,0)
+4 call
+	print(0,1)
+5 call
+	i = 1
+	s[i] = 0
+	s = {1,0}
+	call(6th)
+	s[1] = 1
+	s = {1,1}
+	call(7th)
+6 call
+    i = 2
+	print(1,0)
+7 call
+    i = 2
+	print(1,1)
+```
