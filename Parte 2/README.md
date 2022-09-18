@@ -21,7 +21,14 @@ b) Encontrar o menor elemento no vetor;
 c) Fazer a soma dos elementos no vetor;
 d) Calcular a média aritmética dos elementos no vetor;
 ```
-
+## 5
+```
+Escreva uma função recursiva que calcula o produto de a * b, em que a e b são
+inteiros maiores que zero. considere que o produto pode ser definido como a
+somado a si mesmo b vezes, usando uma definição recursiva temos
+a * b = a se b = 1
+a * b = a * ( b – 1 ) + a se b > 1
+```
 # Aula 03 - Enumeração
 ## 1
 ```
@@ -96,4 +103,70 @@ Dados dois números naturais m e n e duas sequências ordenadas sem números
 repetidos com m e n números inteiros, obter uma única sequência ordenada
 contendo todos os elementos das sequências originais.
 Qual é complexidade da sua função ?
+```
+
+# Aula 04 - Algoritmos força bruta
+
+
+## 1
+```
+
+Enumerar todas as sequências possíveis de 3 dígitos, por exemplo se tivermos
+os dígitos 1, 2 e 3 teríamos como resultado:
+1 1 1, 1 1 2, 1 1 3, 1 2 1, 1 2 2, 1 2 3, 1 3 1, 1 3 2, 1 3 3,
+2 1 1, 2 1 2, 2 1 3, 2 2 1, 2 2 2, 2 2 3, 2 3 1, 2 3 2, 2 3 3,
+3 1 1, 3 1 2, 3 1 3, 3 2 1, 3 2 2, 3 2 3, 3 3 1, 3 3 2, 3 3 3
+
+Implemente na linguagem C o algoritmo sequencias(a[1..n], i, s[1..n]),
+lembre-se que na solução os vetores são indexados a partir de 1 e que n é o
+índice do último elemento no vetor. Você deve fazer ajuste para que o
+algoritmo funcione em C.
+
+Para resolver o problema poderíamos escrever o algoritmo sequencias(a,i,s):
+algoritmo sequencias(a[1..n], i, s[1..n])
+entrada: o vetor a[1..n] com os n dígitos para gerar as sequencias,
+inteiro i para controlar o nível na árvore de recursão, vetor
+solução s[1..n].
+saída: a impressão de todas as sequências de n elementos geradas em
+s[1..n].
+
+início
+    se i > n então # temos uma sequência completa em s[1..n]
+        imprima(s[1..n])
+senão
+    para j de 1 até n faça
+        s[i] <-- a[j]
+        sequencias(s,i+1,a
+```
+
+
+## 2
+```
+Suponha que agora queremos gerar todas as sequências possíveis de tamanho
+3 utilizando a sequencia 1 2 3 4. Neste caso, temos que definir o vetor solução
+como s[1..m], com m=3 e vetor a[1..n] com n=4.
+a) Modifique o algoritmo visto para resolva agora o problema proposto.
+b) Qual seria a complexidade do algoritmo ?
+```
+
+## 3
+```
+Dado a sequência a[1..n] escreva uma função em C que gera todas as
+subsequências da sequencia a[1..n].
+Exemplo: para sequencia 1 2 3 teríamos as seguintes subsequências:
+1, 2, 3, 1 2, 1 3, 2 3, 1 2 3
+Note que a partir da sequência a[1..n] podemos ter 2
+n – 1 subsequências
+distintas.
+```
+
+## Desafio
+```
+Uma permutação de uma sequência com números distintos é qualquer rearranjo
+dos termos dessa sequência em que cada elemento da sequência apareça somente
+uma vez. Considere a sequência 1 2 3, sabemos que há exatamente 6 (3!)
+permutações para a sequencia:
+1 2 3, 1 3 2, 2 1 3, 2 2 3, 3 1 2, 3 2 1
+Problema: Dado uma sequência com n números distintos enumerar as
+permutações n! permutações da sequencia
 ```

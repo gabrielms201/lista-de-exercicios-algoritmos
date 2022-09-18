@@ -105,6 +105,7 @@ double mean(int* arr, int size)
 	// We are getting AVG of N-1 to go down till we break the stop point
 	return ((sum + arr[size - 1]) / size);
 }
+
 void ex4()
 {
 	int arr[5] = { 4,9,10,2,1 };
@@ -135,15 +136,37 @@ void ex4()
 	}
 }
 // Ex 5
+// Returns the product of two numbers
+// a: value 1
+// b: value 2
+int mult(int a, int b)
+{
+	if (b == 1)
+	{
+		return a;
+	}
+	if (b > 1)
+	{
+		return mult(a, b - 1) + a;
+	}
+	return mult(a, b - 1);
+}
+void ex5()
+{
+	int value = mult(3, 4);
+	printf("%d\n", value);
+}
 
 int main()
 {
-	//printf("Exercicio 1: \n");
-	//ex1();
-	//printf("Exercicio 2: \n");
-	//ex2();
-	//printf("Exercicio 3: \n");
-	//ex3();
-	//printf("Exercicio 4: \n");
-	//ex4();
+	printf("Exercicio 1: \n");
+	ex1();
+	printf("Exercicio 2: \n");
+	ex2();
+	printf("Exercicio 3: \n");
+	ex3();
+	printf("Exercicio 4: \n");
+	ex4();
+	printf("Exercicio 5: \n");
+	ex5();
 }
