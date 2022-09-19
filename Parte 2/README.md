@@ -216,6 +216,7 @@ Stack:
 	s[i] = 0
 	s = {1,0}
 	call(6th)
+	//
 	s[1] = 1
 	s = {1,1}
 	call(7th)
@@ -226,3 +227,13 @@ Stack:
     i = 2
 	print(1,1)
 ```
+# 2
+
+```
+Considere uma partida de futebol entre duas equipes AxB, cujo o placar final é
+MxN, em que M e N são números de gols marcados por A e B, respectivamente.
+Escreva um algoritmo utilizando Backtracking que imprima todas as possíveis
+sucessões de gols marcadas. Por exemplo, para um placar 3x1, temos: AAAB.
+AABA, ABAA, BAAA.
+```
+
