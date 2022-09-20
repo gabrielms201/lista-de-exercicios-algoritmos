@@ -61,7 +61,7 @@ int validate(char* a, char* s, int m, int n, int i)
 /// Print all scores possible of a given statistics
 /// </summary>
 /// <param name="a">: Teams array { team A, team B } </param>
-/// <param name="s">: Auxiliar arrya </param>
+/// <param name="s">: Auxiliar array </param>
 /// <param name="m">: Team A score </param>
 /// <param name="n">: Team B score </param>
 /// <param name="i">: Iterator </param>
