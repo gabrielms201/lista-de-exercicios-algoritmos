@@ -39,7 +39,7 @@ void ex1()
 /// Validates if a given sequence is worth to continue generating a sequence of a given array
 /// </summary>
 /// <param name="a">: Teams array { A, B }</param>
-/// <param name="s">: Auxiliar arrya</param>
+/// <param name="s">: Auxiliar array</param>
 /// <param name="m">: Score of Team A</param>
 /// <param name="n">: Score of Team B</param>
 /// <param name="i">: Iterator</param>
