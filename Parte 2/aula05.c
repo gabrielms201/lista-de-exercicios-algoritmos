@@ -32,7 +32,7 @@ void generateBinSequence(int* s, int i, int n)
 }
 void ex1()
 {
-	int s[2];
+	int s[5];
 	generateBinSequence(s, 0, 5);
 }
 /// <summary>
