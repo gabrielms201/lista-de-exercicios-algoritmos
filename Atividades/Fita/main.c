@@ -2,10 +2,13 @@
 
 int main(int argc, char** argv)
 {
+    // If the path was passed as an argument, take it from argv.
+    // If is not, we use the default value ("entrada.txt")
+    const char* filePath = argc != 2 ? "entrada.txt" : argv[1];
     //FILE* file = openFile("entrada.txt");
     double tapeDuration = 30;
     int totalMusics = 4;
-
+    
     double* musicsTimes = (double*) calloc(totalMusics, sizeof(double));
     if (musicsTimes == NULL)
     {
@@ -18,7 +21,7 @@ int main(int argc, char** argv)
         printf("ERRO TENTANDO ALOCAR MEMORIA NA HEAP");
         exit(1);
     }
-
+    // Hardcoded for a while
     musicsTimes[0] = convertToSeconds(3, 11);
     musicsTimes[1] = convertToSeconds(4, 45);
     musicsTimes[2] = convertToSeconds(6, 8);
@@ -31,26 +34,29 @@ int main(int argc, char** argv)
     {
         printf("Impossivel gravar todas as fitas!\n");
     }
+
     free(musicsTimes);
     free(buffer);
-
     return 0;
 }
 
 /// <summary>
 /// Print all tapes of a given music permutation array
 /// </summary>
-/// <param name="musicTimesArray"> Array of musics times</param>
-/// <param name="n"> Number of elements inside the array</param>
-/// <param name="tapeDuration">Duration of the tape in minutes</param>
+/// <param name="musicTimesArray">: Array of musics times</param>
+/// <param name="n">: Number of elements inside the array</param>
+/// <param name="tapeDuration">: Duration of the tape in minutes</param>
 void printTapes(double* musicTimesArray, int n, double tapeDuration)
 {
     tapeDuration *= 60;
     int time = 0;
     int i;
     printf("Lado A: \n");
-    for (i = 0; i < n; i++)
+    // Printing the side A of the Tape...
+    for (i = 0; i < n; i++) 
     {
+        // If the current time plus the next music duration is lesser then the side's duration,
+        // we need to break the loop and try to add the remaining musics to side B
         if (time + musicTimesArray[i] <= tapeDuration / 2)
         {
             printTime(musicTimesArray[i]);
@@ -61,6 +67,7 @@ void printTapes(double* musicTimesArray, int n, double tapeDuration)
             break;
     }
     printf("\nLado B: \n");
+    // Printing the side B of the Tape...
     while (i < n)
     {
         printTime(musicTimesArray[i]);
@@ -78,7 +85,6 @@ void printTapes(double* musicTimesArray, int n, double tapeDuration)
 /// <returns> Total time in minutes </returns>
 double getMusicsTotalTime(double* musicsTimes, int totalMusics)
 {
-    // Melhorar isso ai pra uma funcao
     double totalTime = 0;
     int i;
     for (i = 0; i < totalMusics; i++)
@@ -91,10 +97,10 @@ double getMusicsTotalTime(double* musicsTimes, int totalMusics)
 /// <summary>
 /// Checks if a permutation can be used to save inside a tape of a given duration
 /// </summary>
-/// <param name="permutatedSequence"> Given permutation </param>
-/// <param name="sequenceSize"> Permutation size</param>
-/// <param name="tapeDuration"> Duration of the tape in munutes </param>
-/// <returns>True: Can save ; False: Can't save</returns>
+/// <param name="permutatedSequence">: Given permutation </param>
+/// <param name="sequenceSize">: Permutation size</param>
+/// <param name="tapeDuration">: Duration of the tape in munutes </param>
+/// <returns> True: Can save ; False: Can't save</returns>
 bool canSave(double* permutatedSequence, int sequenceSize, double tapeDuration)
 {
     tapeDuration *= 60;
@@ -103,6 +109,8 @@ bool canSave(double* permutatedSequence, int sequenceSize, double tapeDuration)
     int i;
     for (i = 0; i < sequenceSize; i++)
     {
+        // If the current time plus the next music duration is lesser then the side's duration,
+        // we need to break the loop and try to add the remaining musics to side B
         if (timeA + permutatedSequence[i] <= tapeDuration / 2)
         {
             timeA += permutatedSequence[i];
@@ -112,6 +120,7 @@ bool canSave(double* permutatedSequence, int sequenceSize, double tapeDuration)
             break;
         }
     }
+    // For the remaining musics (i declared out of scope)
     for (i; i < sequenceSize; i++)
     {
         if (timeB + permutatedSequence[i] <= tapeDuration / 2)
@@ -119,10 +128,12 @@ bool canSave(double* permutatedSequence, int sequenceSize, double tapeDuration)
             timeB += permutatedSequence[i];
         }
         else
-        {
+        {   // If the current time plus the next music duration is lesser then the side's duration,
+            // we can't add the music both to the side A and side B, so it's an invalid permutation
             return false;
         }
     }
+    // If we can storage all the musics, the given permutation is valid!!
     return true;
 }
 /// <summary>
@@ -130,46 +141,53 @@ bool canSave(double* permutatedSequence, int sequenceSize, double tapeDuration)
 /// If the tape can't handle all the musics, returns false
 /// otherwise, returns true
 /// </summary>
-/// <param name="sequence"> Given sequence </param>
-/// <param name="n"> Sequence size </param>
-/// <param name="auxiliarSequence"> Auxiliar sequence buffer (must have the same time of the sequence)</param>
-/// <param name="i"> Iterator (first call should be 0)</param>
-/// <param name="tapeDuration">Total Duration of the tape in minutes </param>
-/// <returns>True: The musics can be saved inside the tape ; False: The musics can't be saved inside the tape</returns>
+/// <param name="sequence">: Given sequence </param>
+/// <param name="n">: Sequence size </param>
+/// <param name="auxiliarSequence">: Auxiliar sequence buffer (must have the same time of the sequence)</param>
+/// <param name="i">: Iterator (first call should be 0)</param>
+/// <param name="tapeDuration">: Total Duration of the tape in minutes </param>
+/// <returns> True: The musics can be saved inside the tape ; False: The musics can't be saved inside the tape</returns>
 bool permute(double* sequence, int n, double* auxiliarSequence, int i, double tapeDuration)
 {
     if (i == n)
     {
+        // If we can save the sequence inside the tape, then we print it
         if (canSave(auxiliarSequence, i, tapeDuration))
         {
             printTapes(auxiliarSequence, n, tapeDuration);
             return true;
         }
+        // If we don't, we just return false
         return false;
     }
     int j;
     for (j = 0; j < n; j++)
     {
         auxiliarSequence[i] = sequence[j];
+        // We only call permute again if the next value that's going to be inserted in the sequence is not repeated
+        // (otherwise, it's not a permutation)
         if (validate(auxiliarSequence, i))
         {
+            // If we got the right sequence, we can stop
             if (permute(sequence, n, auxiliarSequence, i + 1, tapeDuration))
                 return true;
         }
     }
+    // We can't storage all the musics
     return false;
 }
 /// <summary>
 /// Checks if the next element that is going to be inserted on the sequence is repeated
 /// </summary>
-/// <param name="sequence"> Given sequence </param>
-/// <param name="i"> iterator </param>
+/// <param name="sequence">: Given sequence </param>
+/// <param name="i">: iterator </param>
 /// <returns> True: Is Valid (not repeated element) ; False: Invalid (repeated element) </returns>
 bool validate(double* sequence, int i)
 {
     int j;
     for (j = 0; j < i; j++)
     {
+        // For each element in (0...i), check if it's repeated
         if (sequence[i] == sequence[j])
             return false;
     }
@@ -178,7 +196,7 @@ bool validate(double* sequence, int i)
 /// <summary>
 /// Print the time of a given value in seconds
 /// </summary>
-/// <param name="value">Value in seconds</param>
+/// <param name="value">: Value in seconds</param>
 void printTime(int valueInSeconds)
 {
     int hour = (valueInSeconds / 3600.00);
@@ -189,8 +207,8 @@ void printTime(int valueInSeconds)
 /// <summary>
 /// Simple function to print all elements inside an array
 /// </summary>
-/// <param name="arr">Given array</param>
-/// <param name="size">Array size</param>
+/// <param name="arr">: Given array</param>
+/// <param name="size">: Array size</param>
 void printArray(double* arr, int size)
 {
     int i;
@@ -203,8 +221,8 @@ void printArray(double* arr, int size)
 /// <summary>
 /// Convert a given time into seconds
 /// </summary>
-/// <param name="minutes">Time in minutes</param>
-/// <param name="seconds">Time in seconds</param>
+/// <param name="minutes">: Time in minutes</param>
+/// <param name="seconds">: Time in seconds</param>
 /// <returns>Total time in seconds</returns>
 double convertToSeconds(int minutes, int seconds)
 {
