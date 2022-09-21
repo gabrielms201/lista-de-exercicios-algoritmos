@@ -137,7 +137,7 @@ bool canSave(double* permutatedSequence, int sequenceSize, double tapeDuration)
     return true;
 }
 /// <summary>
-/// Given a sequence, try to get all permutations and check foreach one if all the musics can be saved inside the tape.
+/// Given a sequence, tries to get all permutations and check foreach one if all the musics can be saved inside the tape.
 /// If the tape can't handle all the musics, returns false
 /// otherwise, returns true
 /// </summary>
