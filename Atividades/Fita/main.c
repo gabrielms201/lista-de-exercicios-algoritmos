@@ -1,42 +1,10 @@
 #include "main.h"
-
 int main(int argc, char** argv)
 {
     // If the path was passed as an argument, take it from argv.
     // If is not, we use the default value ("entrada.txt")
     const char* filePath = argc != 2 ? "entrada.txt" : argv[1];
-    //FILE* file = openFile("entrada.txt");
-    double tapeDuration = 30;
-    int totalMusics = 4;
-    
-    double* musicsTimes = (double*) calloc(totalMusics, sizeof(double));
-    if (musicsTimes == NULL)
-    {
-        printf("ERRO TENTANDO ALOCAR MEMORIA NA HEAP");
-        exit(1);
-    }
-    double* buffer = (double*) calloc(totalMusics, sizeof(double));
-    if (buffer == NULL)
-    {
-        printf("ERRO TENTANDO ALOCAR MEMORIA NA HEAP");
-        exit(1);
-    }
-    // Hardcoded for a while
-    musicsTimes[0] = convertToSeconds(3, 11);
-    musicsTimes[1] = convertToSeconds(4, 45);
-    musicsTimes[2] = convertToSeconds(6, 8);
-    musicsTimes[3] = convertToSeconds(13, 45);
-
-    double totalTime = getMusicsTotalTime(musicsTimes, totalMusics);
-
-    printf("%.2lf Minutos\n", tapeDuration);
-    if (totalTime > tapeDuration || !permute(musicsTimes, totalMusics, buffer, 0, tapeDuration))
-    {
-        printf("Impossivel gravar todas as fitas!\n");
-    }
-
-    free(musicsTimes);
-    free(buffer);
+    openFile(filePath);
     return 0;
 }
 
@@ -231,15 +199,72 @@ double convertToSeconds(int minutes, int seconds)
 
 
 // descrever
-FILE* openFile(const char* filepath)
+void openFile(const char* filepath)
 {
+    int testQuantity;
     FILE* file = fopen(filepath, "r");
     if (!file)
     {
         printf("ERRO TENTANDO ABRIR O ARQUIVO!! \n");
         exit(1);
     }
-    return file;
+   
+    fscanf(file, "%d", &testQuantity);
+    int i;
+    for (i = 0; i < testQuantity; i++)
+    {
+        Tape tape;
+        double* musicsTimes;
+        double* buffer;
+        fscanf(file, "%d", &tape.tapeDuration);
+        fscanf(file, "%d", &tape.totalMusics);
+        /*createMusicArray(&tape, &musicsTimes, &buffer);*/
+        populateMusicsAndTest(&tape, file);
+    }
+    fclose(file);
+}
+void createMusicArray(Tape* tape, double** musicsTimes, double** buffer)
+{
+    *musicsTimes = (double*)calloc(tape->totalMusics, sizeof(double));
+    *buffer = (double*)calloc(tape->totalMusics, sizeof(double));
+    if (*musicsTimes == NULL)
+    {
+        printf("ERRO TENTANDO ALOCAR MEMORIA NA HEAP");
+        exit(1);
+    }
+    if (*buffer == NULL)
+    {
+        printf("ERRO TENTANDO ALOCAR MEMORIA NA HEAP");
+        exit(1);
+    }
+}
+void populateMusicsAndTest(Tape* tape, FILE* file)
+{
+    double* musicsTimes;
+    double* buffer;
+    createMusicArray(tape, &musicsTimes, &buffer);
+    int totalMusics = tape->totalMusics;
+    double tapeDuration = tape->tapeDuration;
+    int i;
+    for (i = 0; i < totalMusics; i++)
+    {
+        int minutes;
+        int seconds;
+        fscanf(file, "%d", &minutes);
+        fscanf(file, "%d", &seconds);
+        musicsTimes[i] = convertToSeconds(minutes, seconds);
+    }
+
+    double totalTime = getMusicsTotalTime(musicsTimes, totalMusics);
+
+    printf("%.2lf Minutos\n", tapeDuration);
+    if (totalTime > tapeDuration || !permute(musicsTimes, totalMusics, buffer, 0, tapeDuration))
+    {
+        printf("Impossivel gravar todas as fitas!\n");
+    }
+    // we must free it before finishing (of course)
+    free(musicsTimes);
+    free(buffer);
 }
 
 
