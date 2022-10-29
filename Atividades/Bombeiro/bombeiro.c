@@ -111,7 +111,7 @@ void storageDestinations(Path* const connections, int i, int j, KEY_AND_VALUE* d
 typedef struct 
 {
 	int source;
-	KEY_AND_VALUE* destinations; // destiny[1][X]
+	KEY_AND_VALUE* destinations; // key: corner - value: time
 	int totalPaths;
 } CornerWay;
 
@@ -271,7 +271,7 @@ void printMap(const Map map)
 		}
 	}
 	// Creating a scope to isolate i variable
-	printf("Ways: MUDAR POR FAVOR\n");
+	printf("Ways: MUDAR POR FAVOR\n\n nao esquece cara\n\n pq a gente ta colocando muita variavel a toa. Da pra da uma melhorada nisso aew");
 	{
 		int i;
 		for (i = 0; i <map.cornerCount; i++)
@@ -288,7 +288,7 @@ void printMap(const Map map)
 // ----------------------------------------------------------
 // Algorithm
 
-int findLowerCostCorner(const int* const T, int i, int size, const int* E)
+int findLowestCostCorner(const int* const T, int i, int size, const int* E)
 {
 	int lowerIndex = 0;
 	int j;
@@ -310,45 +310,50 @@ int findLowerCostCorner(const int* const T, int i, int size, const int* E)
 
 int* fastestRoute(const Map* const map)
 {
+	// T array: best time for all corners
 	int* T = (int*)calloc(map->cornerCount, sizeof(int));
 	// E representes all corners
 	// If the value is present, 1
 	// If the value is not present, 0.
 	int* E = (int*)calloc(map->cornerCount, sizeof(int));
-	
 	// Filling T with max value possible
 	changeAllIntArrayValues(T, map->cornerCount, INT_MAX);
 	// 1 - 1 = 0min
 	T[0] = 0;
 	// Inverting E to 1
 	changeAllIntArrayValues(E, map->cornerCount, 1);
+
+	// Instead of doing a search everytime, we can just assign a variable with the original size of E, and then
+	// we decrease it's value everytime we "remove" an element
 	int availableCornersCount = map->cornerCount;
-	int index = 0;
 
 	printIntArr(T, map->cornerCount);
 	while (availableCornersCount != 0)
 	{
-		// Vamos depois arrumar isso. Uma ideia: Ordenar o vetor.
 		int i;
-		int lowerIndex = findLowerCostCorner(T, 0, map->cornerCount, E); // v
+		int lowerIndex = findLowestCostCorner(T, 0, map->cornerCount, E); // Corner in E[] with the lowest value in T[] 
 		int V = E[lowerIndex];
-		E[lowerIndex] = 0; // removing corner v from E
-		availableCornersCount--;
-		CornerWay acessablePaths = map->ways[lowerIndex];
-		for (i = 0; i < acessablePaths.totalPaths; i++)
+		// "removing" corner v from E:
+		E[lowerIndex] = 0; 
+		availableCornersCount--; 
+		CornerWay accessiblePaths = map->ways[lowerIndex];
+		// For each acessible path from your point (lowerIndex)
+		for (i = 0; i < accessiblePaths.totalPaths; i++)
 		{
-			KEY_AND_VALUE e = acessablePaths.destinations[i];
+			// Corner Key and Value.
+			// Key: Corner number
+			// Value: Corner time 
+			KEY_AND_VALUE cornerKeyAndValue = accessiblePaths.destinations[i]; 
 			// if the corner is not present in E, we go to the next one.
-			if (E[e.key - 1] == 0)
-				break;
-			if (T[e.key-1] > T[lowerIndex] + e.value)
+			int accessibleCorner = cornerKeyAndValue.key; // "e" variable
+			int accessibleCornerTime = cornerKeyAndValue.value;
+			// If the corner is not in E, we break the loop and goto the next one!
+			if (E[accessibleCorner - 1] == 0) break;
+			if (T[accessibleCorner - 1] > T[lowerIndex] + accessibleCornerTime)
 			{
-				T[e.key-1] = T[lowerIndex] + e.value;
+				T[accessibleCorner - 1] = T[lowerIndex] + accessibleCornerTime;
 			}
 		}
-		printIntArr(E, map->cornerCount);
-		index++;
-		
 	}
 
 	free(E);
@@ -368,7 +373,8 @@ int main()
 	printMap(map);
 
 	int* T = fastestRoute(&map);
-
+	printf("Caminhos de T:\n");
+	printIntArr(T, map.cornerCount);
 
 	// Now we free the allocated memory
 	free(T);
