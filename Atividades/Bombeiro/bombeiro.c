@@ -464,8 +464,6 @@ ResultAndTime fastestRoute(const Map* const map)
 			int accessibleCorner = cornerKeyAndValue.key; // "e" variable
 			int accessibleCornerTime = cornerKeyAndValue.value;
 			// If the corner is not in E, we break the loop and goto the next one!
-			printf("Vendo caminhos da esquina numero %d\n", accessiblePaths.source);
-			printf("Caminho de %d para: %d\n", accessiblePaths.source, accessiblePaths.destinations[i].key);
 			if (E[accessibleCorner - 1] == 0)
 			{
 				break;
