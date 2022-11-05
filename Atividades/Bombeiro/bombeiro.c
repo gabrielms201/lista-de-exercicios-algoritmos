@@ -155,7 +155,30 @@ void freeWay(CornerWay* way)
 {
 	free(way->destinations);
 }
-
+// ----------------------------------------------------------
+// ResultAndTime
+typedef struct
+{
+	int* T;
+	int* R;
+} ResultAndTime;
+void freeResult(ResultAndTime* result)
+{
+	free(result->T);
+	free(result->R);
+}
+void printRoute(ResultAndTime* result, int corner, int first)
+{
+	corner = corner - 1;
+	if (result->R[corner] == 0)
+	{
+		return;
+	}
+	printRoute(result, result->R[corner], 0);
+	printf("%d - ", result->R[corner]);
+	if (first)
+		printf("%d", corner+1);
+}
 
 
 // ----------------------------------------------------------
@@ -304,7 +327,7 @@ int findLowestCostCorner(const int* const T, int i, int size, const int* E)
 	return lowerIndex;
 }
 
-int* fastestRoute(const Map* const map)
+ResultAndTime fastestRoute(const Map* const map)
 {
 	// T array: best time for all corners
 	int* T = (int*)calloc(map->cornerCount, sizeof(int));
@@ -312,9 +335,8 @@ int* fastestRoute(const Map* const map)
 	// If the value is present, 1
 	// If the value is not present, 0.
 	int* E = (int*)calloc(map->cornerCount, sizeof(int));
-
-
 	int* R = (int*)calloc(map->cornerCount, sizeof(int));
+	ResultAndTime result = { T, R };
 
 
 
@@ -381,10 +403,8 @@ int* fastestRoute(const Map* const map)
 			}
 		}
 	}
-	printf("aqui teste: \n");
-	printIntArr(R, map->cornerCount);
 	free(E);
-	return T;
+	return result;
 }
 // ----------------------------------------------------------
 
@@ -399,12 +419,16 @@ int main()
 	Map map = createMap(arr, CORNERS, MOCKED_ARRAY_SIZE);
 	printMap(map);
 
-	int* T = fastestRoute(&map);
+	ResultAndTime result = fastestRoute(&map);
 	printf("Vetor T:\n");
-	printIntArr(T, map.cornerCount);
+	printIntArr(result.T, map.cornerCount);
+	printf("Vetor R:\n");
+	printIntArr(result.R, map.cornerCount);
+	printf("Rota para a esquina 3:\n");
+	printRoute(&result, 3, 1);
 
 	// Now we free the allocated memory
-	free(T);
+	freeResult(&result);
 	freeMap(&map);
 }
 // ----------------------------------------------------------
