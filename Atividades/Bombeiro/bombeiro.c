@@ -81,7 +81,7 @@ void mockPathArray(Path* array)
 int countCornerPaths(Path* const connections, int* i, int corner, int totalPaths)
 {
 	int count = 0;
-	for (;*i < totalPaths; (*i)++)
+	for (; *i < totalPaths; (*i)++)
 	{
 		if (connections[*i].connection.key != corner)
 		{
@@ -108,7 +108,7 @@ void storageDestinations(Path* const connections, int i, int j, KEY_AND_VALUE* d
 
 // ----------------------------------------------------------
 // CornerWays
-typedef struct 
+typedef struct
 {
 	int source;
 	KEY_AND_VALUE* destinations; // key: corner - value: time
@@ -130,7 +130,7 @@ CornerWay* createWays(Path* connections, int totalConnections, int cornerCount)
 		pathCountForThisCorner = countCornerPaths(connections, &lastCornerIndexCounted, i + 1, totalConnections);
 		if (pathCountForThisCorner == 0)
 		{
-			printf("Nao ha caminhos para a esquina %d!", i+1);
+			printf("Nao ha caminhos para a esquina %d!", i + 1);
 			exit(1);
 		}
 		destinations = (KEY_AND_VALUE*)calloc(pathCountForThisCorner, sizeof(KEY_AND_VALUE));
@@ -138,17 +138,13 @@ CornerWay* createWays(Path* connections, int totalConnections, int cornerCount)
 		CornerWay way = { i + 1, destinations, pathCountForThisCorner };
 		ways[i] = way;
 	}
-	for (j = 0; j < totalConnections; j++)
-	{
-
-	}
 	return ways;
 }
 void printWay(const CornerWay way)
 {
 	printf("Esquina (%d): ", way.source);
 	int i;
-	for ( i = 0; i < way.totalPaths; i++)
+	for (i = 0; i < way.totalPaths; i++)
 	{
 		printf("%d (%d min) ", way.destinations[i].key, way.destinations[i].value);
 	}
@@ -189,7 +185,7 @@ void sortPathsByCorner(Path* const paths, int connectionsCount)
 		for (j = 0; j < connectionsCount - 1; j++)
 		{
 			Path currentPath = paths[j];
-			Path nextPath = paths[j+1];
+			Path nextPath = paths[j + 1];
 			if (currentPath.connection.key > nextPath.connection.key)
 			{
 				Path temp = paths[j];
@@ -223,7 +219,7 @@ Map createMap(Path* const connections, int totalCorners, int connectionsCount)
 	}
 	map.ways = createWays(connections, connectionsCount, totalCorners);
 
-	
+
 	return map;
 }
 
@@ -271,10 +267,10 @@ void printMap(const Map map)
 		}
 	}
 	// Creating a scope to isolate i variable
-	printf("Ways: MUDAR POR FAVOR\n\n nao esquece cara\n\n pq a gente ta colocando muita variavel a toa. Da pra da uma melhorada nisso aew");
+	printf("Ways: MUDAR POR FAVOR\n\n nao esquece cara\n\n pq a gente ta colocando muita variavel a toa. Da pra da uma melhorada nisso aew\n");
 	{
 		int i;
-		for (i = 0; i <map.cornerCount; i++)
+		for (i = 0; i < map.cornerCount; i++)
 		{
 			printWay(map.ways[i]);
 		}
@@ -300,7 +296,7 @@ int findLowestCostCorner(const int* const T, int i, int size, const int* E)
 			break;
 		}
 	}
-	for (;i < size; i++)
+	for (; i < size; i++)
 	{
 		if (T[i] < T[lowerIndex] && E[i] != 0)
 			lowerIndex = i;
@@ -316,6 +312,23 @@ int* fastestRoute(const Map* const map)
 	// If the value is present, 1
 	// If the value is not present, 0.
 	int* E = (int*)calloc(map->cornerCount, sizeof(int));
+
+
+	int* R = (int*)calloc(map->cornerCount, sizeof(int));
+
+
+
+	// TODO: CREATE A VECTOR WITH ALL PATHS:
+	// MOCKED EXAMPLE:
+	/*
+		1 -> 1: {1}
+		1 -> 2 : {1, 4, 5, 6, 2}
+		1 -> 3 : {1, 4, 5, 6, 2, 3}
+		1 -> 4 : {1, 4}
+		1 -> 5 : {1, 4, 5}
+		1 -> 6 : {1, 4, 5, 6}
+	*/
+
 	// Filling T with max value possible
 	changeAllIntArrayValues(T, map->cornerCount, INT_MAX);
 	// 1 - 1 = 0min
@@ -326,16 +339,17 @@ int* fastestRoute(const Map* const map)
 	// Instead of doing a search everytime, we can just assign a variable with the original size of E, and then
 	// we decrease it's value everytime we "remove" an element
 	int availableCornersCount = map->cornerCount;
+	int Test[6];
 
-	printIntArr(T, map->cornerCount);
 	while (availableCornersCount != 0)
 	{
 		int i;
 		int lowerIndex = findLowestCostCorner(T, 0, map->cornerCount, E); // Corner in E[] with the lowest value in T[] 
 		int V = E[lowerIndex];
+
 		// "removing" corner v from E:
-		E[lowerIndex] = 0; 
-		availableCornersCount--; 
+		E[lowerIndex] = 0;
+		availableCornersCount--;
 		CornerWay accessiblePaths = map->ways[lowerIndex];
 		// For each acessible path from your point (lowerIndex)
 		for (i = 0; i < accessiblePaths.totalPaths; i++)
@@ -343,19 +357,32 @@ int* fastestRoute(const Map* const map)
 			// Corner Key and Value.
 			// Key: Corner number
 			// Value: Corner time 
-			KEY_AND_VALUE cornerKeyAndValue = accessiblePaths.destinations[i]; 
+			KEY_AND_VALUE cornerKeyAndValue = accessiblePaths.destinations[i];
 			// if the corner is not present in E, we go to the next one.
 			int accessibleCorner = cornerKeyAndValue.key; // "e" variable
 			int accessibleCornerTime = cornerKeyAndValue.value;
 			// If the corner is not in E, we break the loop and goto the next one!
-			if (E[accessibleCorner - 1] == 0) break;
+			printf("Vendo caminhos da esquina numero %d\n", accessiblePaths.source);
+			printf("Caminho de %d para: %d\n", accessiblePaths.source, accessiblePaths.destinations[i].key);
+			if (E[accessibleCorner - 1] == 0)
+			{
+				break;
+			}
 			if (T[accessibleCorner - 1] > T[lowerIndex] + accessibleCornerTime)
 			{
+				/*if (accessibleCorner == 3)
+				{
+					int valor = 32;
+					printf("%d\n", accessibleCornerTime);
+					printf("test: %d\n", T[lowerIndex] + accessibleCornerTime);
+				}*/
 				T[accessibleCorner - 1] = T[lowerIndex] + accessibleCornerTime;
+				R[accessibleCorner - 1] = accessiblePaths.source;
 			}
 		}
 	}
-
+	printf("aqui teste: \n");
+	printIntArr(R, map->cornerCount);
 	free(E);
 	return T;
 }
@@ -373,7 +400,7 @@ int main()
 	printMap(map);
 
 	int* T = fastestRoute(&map);
-	printf("Caminhos de T:\n");
+	printf("Vetor T:\n");
 	printIntArr(T, map.cornerCount);
 
 	// Now we free the allocated memory
