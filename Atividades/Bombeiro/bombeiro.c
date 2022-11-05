@@ -24,7 +24,12 @@ void printIntArr(int* arr, int size)
 	printf("}");
 	printf("\n");
 }
-
+/// <summary>
+/// Quick function to change all values of an array
+/// </summary>
+/// <param name="arr"></param>
+/// <param name="size"></param>
+/// <param name="newValue"></param>
 void changeAllIntArrayValues(int* arr, int size, int newValue)
 {
 	int i;
@@ -52,6 +57,13 @@ typedef struct
 	int time;
 } Path;
 
+/// <summary>
+/// Creates a path based on given parameters
+/// </summary>
+/// <param name="source"></param>
+/// <param name="destination"></param>
+/// <param name="time"></param>
+/// <returns></returns>
 Path createPath(int source, int destination, int time)
 {
 	KEY_AND_VALUE connection = { source, destination };
@@ -59,6 +71,10 @@ Path createPath(int source, int destination, int time)
 	return path;
 }
 
+/// <summary>
+/// Creates an array of paths (used on tests without files)
+/// </summary>
+/// <param name="array"></param>
 void mockPathArray(Path* array)
 {
 	array[0] = createPath(4, 6, 3);
@@ -91,7 +107,13 @@ int countCornerPaths(Path* const connections, int* i, int corner, int totalPaths
 	}
 	return count;
 }
-
+/// <summary>
+/// Storages each destination based on it's key and value (corner and time)
+/// </summary>
+/// <param name="connections"></param>
+/// <param name="i"></param>
+/// <param name="j"></param>
+/// <param name="destinations"></param>
 void storageDestinations(Path* const connections, int i, int j, KEY_AND_VALUE* destinations)
 {
 	int index = 0;
@@ -108,6 +130,8 @@ void storageDestinations(Path* const connections, int i, int j, KEY_AND_VALUE* d
 
 // ----------------------------------------------------------
 // CornerWays
+// Ex:
+// Corner 1 can acess corner 4 and 6
 typedef struct
 {
 	int source;
@@ -115,6 +139,13 @@ typedef struct
 	int totalPaths;
 } CornerWay;
 
+/// <summary>
+/// Creates an array of ways
+/// </summary>
+/// <param name="connections"></param>
+/// <param name="totalConnections"></param>
+/// <param name="cornerCount"></param>
+/// <returns>Array of ways</returns>
 CornerWay* createWays(Path* connections, int totalConnections, int cornerCount)
 {
 	CornerWay* ways = (CornerWay*)calloc(cornerCount, sizeof(CornerWay));
@@ -140,6 +171,11 @@ CornerWay* createWays(Path* connections, int totalConnections, int cornerCount)
 	}
 	return ways;
 }
+
+/// <summary>
+/// Prints all the values of a way
+/// </summary>
+/// <param name="way"></param>
 void printWay(const CornerWay way)
 {
 	printf("Esquina (%d): ", way.source);
@@ -151,6 +187,11 @@ void printWay(const CornerWay way)
 	printf("\n");
 	return;
 }
+
+/// <summary>
+/// Free array of ways
+/// </summary>
+/// <param name="way"></param>
 void freeWay(CornerWay* way)
 {
 	free(way->destinations);
@@ -161,13 +202,26 @@ typedef struct
 {
 	int* T;
 	int* R;
+	int size;
 } ResultAndTime;
+
+/// <summary>
+/// Free all array results
+/// </summary>
+/// <param name="result"></param>
 void freeResult(ResultAndTime* result)
 {
 	free(result->T);
 	free(result->R);
 }
-void printRoute(ResultAndTime* result, int corner, int first)
+
+/// <summary>
+/// Recursively prints the best route based on R
+/// </summary>
+/// <param name="result"></param>
+/// <param name="corner"></param>
+/// <param name="first"></param>
+void printRoute(ResultAndTime const * const result, int corner, int first)
 {
 	corner = corner - 1;
 	if (result->R[corner] == 0)
@@ -177,7 +231,31 @@ void printRoute(ResultAndTime* result, int corner, int first)
 	printRoute(result, result->R[corner], 0);
 	printf("%d - ", result->R[corner]);
 	if (first)
-		printf("%d", corner+1);
+		printf("%d\n", corner+1);
+}
+
+/// <summary>
+/// Returns the value of T on corner index-1
+/// </summary>
+/// <param name="result"></param>
+/// <param name="corner"></param>
+/// <returns></returns>
+int getCornerTime(ResultAndTime const * const result, int corner)
+{
+	return result->T[corner - 1];
+}
+
+/// <summary>
+/// Prints the route to a corner, and the time to reach it
+/// </summary>
+/// <param name="result"></param>
+/// <param name="targetCorner"></param>
+void printResult(ResultAndTime const * const result, int targetCorner)
+{
+	printf("Rota para a esquina %d:\n", targetCorner);
+	printRoute(result, targetCorner, 1);
+	int time = getCornerTime(result, targetCorner);
+	printf("Tempo para chegar na esquina %d: %d", targetCorner, time);
 }
 
 
@@ -218,6 +296,7 @@ void sortPathsByCorner(Path* const paths, int connectionsCount)
 		}
 	}
 }
+
 /// <summary>
 /// Creates a map to track all connections
 /// </summary>
@@ -261,6 +340,7 @@ void freeMap(Map* map)
 	free(map->connections);
 	free(map->ways);
 }
+
 /// <summary>
 /// Print all Map informations
 /// </summary>
@@ -307,6 +387,15 @@ void printMap(const Map map)
 // ----------------------------------------------------------
 // Algorithm
 
+/// <summary>
+/// Find the lower cost corner in T (v)
+/// "v eh uma esquina em E com o menor custo no vetor T[]"
+/// </summary>
+/// <param name="T"></param>
+/// <param name="i"></param>
+/// <param name="size"></param>
+/// <param name="E"></param>
+/// <returns></returns>
 int findLowestCostCorner(const int* const T, int i, int size, const int* E)
 {
 	int lowerIndex = 0;
@@ -326,7 +415,12 @@ int findLowestCostCorner(const int* const T, int i, int size, const int* E)
 	}
 	return lowerIndex;
 }
-
+/// <summary>
+/// Main Algo
+/// Here we find the best route and time for each corner inside a given map
+/// </summary>
+/// <param name="map"></param>
+/// <returns></returns>
 ResultAndTime fastestRoute(const Map* const map)
 {
 	// T array: best time for all corners
@@ -336,20 +430,7 @@ ResultAndTime fastestRoute(const Map* const map)
 	// If the value is not present, 0.
 	int* E = (int*)calloc(map->cornerCount, sizeof(int));
 	int* R = (int*)calloc(map->cornerCount, sizeof(int));
-	ResultAndTime result = { T, R };
-
-
-
-	// TODO: CREATE A VECTOR WITH ALL PATHS:
-	// MOCKED EXAMPLE:
-	/*
-		1 -> 1: {1}
-		1 -> 2 : {1, 4, 5, 6, 2}
-		1 -> 3 : {1, 4, 5, 6, 2, 3}
-		1 -> 4 : {1, 4}
-		1 -> 5 : {1, 4, 5}
-		1 -> 6 : {1, 4, 5, 6}
-	*/
+	ResultAndTime result = { T, R, map->cornerCount};
 
 	// Filling T with max value possible
 	changeAllIntArrayValues(T, map->cornerCount, INT_MAX);
@@ -361,13 +442,12 @@ ResultAndTime fastestRoute(const Map* const map)
 	// Instead of doing a search everytime, we can just assign a variable with the original size of E, and then
 	// we decrease it's value everytime we "remove" an element
 	int availableCornersCount = map->cornerCount;
-	int Test[6];
 
 	while (availableCornersCount != 0)
 	{
 		int i;
 		int lowerIndex = findLowestCostCorner(T, 0, map->cornerCount, E); // Corner in E[] with the lowest value in T[] 
-		int V = E[lowerIndex];
+		//int V = E[lowerIndex];
 
 		// "removing" corner v from E:
 		E[lowerIndex] = 0;
@@ -392,13 +472,9 @@ ResultAndTime fastestRoute(const Map* const map)
 			}
 			if (T[accessibleCorner - 1] > T[lowerIndex] + accessibleCornerTime)
 			{
-				/*if (accessibleCorner == 3)
-				{
-					int valor = 32;
-					printf("%d\n", accessibleCornerTime);
-					printf("test: %d\n", T[lowerIndex] + accessibleCornerTime);
-				}*/
+				// Storaging the time to reach this corner
 				T[accessibleCorner - 1] = T[lowerIndex] + accessibleCornerTime;
+				// Storaging the corner to reach this corner
 				R[accessibleCorner - 1] = accessiblePaths.source;
 			}
 		}
@@ -420,12 +496,16 @@ int main()
 	printMap(map);
 
 	ResultAndTime result = fastestRoute(&map);
+
+	// Vector result
 	printf("Vetor T:\n");
-	printIntArr(result.T, map.cornerCount);
+	printIntArr(result.T, result.size);
 	printf("Vetor R:\n");
-	printIntArr(result.R, map.cornerCount);
-	printf("Rota para a esquina 3:\n");
-	printRoute(&result, 3, 1);
+	printIntArr(result.R, result.size);
+
+
+	int targetCorner = CORNER_ON_FIRE;
+	printResult(&result, targetCorner);
 
 	// Now we free the allocated memory
 	freeResult(&result);
