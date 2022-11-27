@@ -221,7 +221,7 @@ void freeResult(ResultAndTime* result)
 /// <param name="result"></param>
 /// <param name="corner"></param>
 /// <param name="first"></param>
-void printRoute(ResultAndTime const * const result, int corner, int first)
+void printRoute(ResultAndTime const* const result, int corner, int first)
 {
 	corner = corner - 1;
 	if (result->R[corner] == 0)
@@ -231,7 +231,7 @@ void printRoute(ResultAndTime const * const result, int corner, int first)
 	printRoute(result, result->R[corner], 0);
 	printf("%d - ", result->R[corner]);
 	if (first)
-		printf("%d\n", corner+1);
+		printf("%d\n", corner + 1);
 }
 
 /// <summary>
@@ -240,7 +240,7 @@ void printRoute(ResultAndTime const * const result, int corner, int first)
 /// <param name="result"></param>
 /// <param name="corner"></param>
 /// <returns></returns>
-int getCornerTime(ResultAndTime const * const result, int corner)
+int getCornerTime(ResultAndTime const* const result, int corner)
 {
 	return result->T[corner - 1];
 }
@@ -250,7 +250,7 @@ int getCornerTime(ResultAndTime const * const result, int corner)
 /// </summary>
 /// <param name="result"></param>
 /// <param name="targetCorner"></param>
-void printResult(ResultAndTime const * const result, int targetCorner)
+void printResult(ResultAndTime const* const result, int targetCorner)
 {
 	printf("Rota para a esquina %d:\n", targetCorner);
 	printRoute(result, targetCorner, 1);
@@ -370,7 +370,6 @@ void printMap(const Map map)
 		}
 	}
 	// Creating a scope to isolate i variable
-	printf("Ways: MUDAR POR FAVOR\n\n nao esquece cara\n\n pq a gente ta colocando muita variavel a toa. Da pra da uma melhorada nisso aew\n");
 	{
 		int i;
 		for (i = 0; i < map.cornerCount; i++)
@@ -430,7 +429,7 @@ ResultAndTime fastestRoute(const Map* const map)
 	// If the value is not present, 0.
 	int* E = (int*)calloc(map->cornerCount, sizeof(int));
 	int* R = (int*)calloc(map->cornerCount, sizeof(int));
-	ResultAndTime result = { T, R, map->cornerCount};
+	ResultAndTime result = { T, R, map->cornerCount };
 
 	// Filling T with max value possible
 	changeAllIntArrayValues(T, map->cornerCount, INT_MAX);
@@ -481,16 +480,47 @@ ResultAndTime fastestRoute(const Map* const map)
 	return result;
 }
 // ----------------------------------------------------------
-
-// ----------------------------------------------------------
-// Driver Code
-int main()
+void run(const char* filepath)
 {
-	Path* arr = (Path*)calloc(MOCKED_ARRAY_SIZE, sizeof(Path));
-	mockPathArray(arr);
-	// TODO: Criar uma função para criar um array de paths de acordo com o arquivo
+	FILE* file = fopen(filepath, "r");
+	if (!file)
+	{
+		printf("ERRO TENTANDO ABRIR O ARQUIVO!! \n");
+		exit(1);
+	}
+	//
+	int targetCorner = 0;
+	int arraySize = 0;
+	int cornerQty = 0;
 
-	Map map = createMap(arr, CORNERS, MOCKED_ARRAY_SIZE);
+	// TODO: Criar uma função para criar um array de paths de acordo com o arquivo
+	Path* arr = (Path*)calloc(arraySize, sizeof(Path));
+	// Leitura da esquina destino
+	fscanf(file, "%d", &targetCorner);
+	// Leitura da quantidade de esquinas
+	fscanf(file, "%d", &cornerQty);
+
+	int source = 1;
+	int destiny = 1;
+	int time = 1;
+	int index = 0;
+	while (source != 0)
+	{
+		fscanf(file, "%d", &source);
+		if (source == 0)
+		{
+			break;
+		}
+		arraySize++;
+		arr = (Path*)realloc(arr, arraySize * sizeof(Path));
+		fscanf(file, "%d", &destiny);
+		fscanf(file, "%d", &time);
+		arr[index] = createPath(source, destiny, time);
+		int test = 32;
+		index++;
+	}
+
+	Map map = createMap(arr, cornerQty, arraySize);
 	printMap(map);
 
 	ResultAndTime result = fastestRoute(&map);
@@ -502,11 +532,28 @@ int main()
 	printIntArr(result.R, result.size);
 
 
-	int targetCorner = CORNER_ON_FIRE;
 	printResult(&result, targetCorner);
 
 	// Now we free the allocated memory
 	freeResult(&result);
 	freeMap(&map);
+
+
+	fclose(file);
+}
+// ----------------------------------------------------------
+// Driver Code
+int main(int argc, char** argv)
+{
+	const char* filePath;
+	if (argc == 2)
+	{
+		filePath = argv[1];
+	}
+	else
+	{
+		filePath = "bombeiros.txt";
+	}
+	run(filePath);
 }
 // ----------------------------------------------------------
